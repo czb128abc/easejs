@@ -1,18 +1,18 @@
-// ease.js
+// module.js
 /*
 
-define (id, function (require, exports, ease) {
+define (id, function (require, exports, module) {
     // 1. return Something
     // 2. exports.method = function () {}
-    // 3. exports = {...}
+    // 3. module.exports = {...}
 });
 
-define (function (require, exports, ease) {
+define (function (require, exports, module) {
     // 自动生成模块 Id
 });
 
 define({
-    initialize: function (ease) {
+    initialize: function (module) {
         // 自执行
     }
 })
