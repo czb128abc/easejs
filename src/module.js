@@ -29,7 +29,6 @@ define({
         };
     });
 
-
     // ------------------------------------------------------------- Module System
     // require 分析
     var RE_REQUIRE = /(?:^|[^.$])\brequire\s*\(\s*(["'])([^"'\s\)]+)\1\s*\)/g;
@@ -328,9 +327,10 @@ define({
 
     global.define = define;
     global.ease = {
-        load: loadFiles,
-        use: loadFiles,
-        uid: uid
+        'load': loadFiles,
+        'use': loadFiles,
+        'uid': uid,
+        'forEach': forEach
     };
 
 })(this);

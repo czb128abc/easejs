@@ -80,11 +80,17 @@ define('util', function (require, exports, module) {
         return ret;
     };
 
-    return extend({
+    // DOM 元素判断
+    function isElement (element) {
+        return !!(element && element.nodeType === 1);
+    }
+
+    return extend({}, ease, {
             'extend': extend,
             'map': map,
             'filter': filter,
             'keys': keys,
-            'unique': unique
-        }, ease);
+            'unique': unique,
+            'isElement': isElement
+        });
 });

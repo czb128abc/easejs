@@ -111,4 +111,95 @@ test('isObject', 3, function () {
 		equal(util.isObject(document.getElementById('#qunit')), false, 'DOM 对象不是 Object');
 		// equal(util.isObject(null), true, 'null 是 Object');
 	});
-})
+});
+
+test('isArray', 4, function () {
+	define(function (require) {
+		var isArray = require('util').isArray;
+
+		equal(isArray([]), true, '[] 是 Array');
+		equal(isArray([1, 'string']), true, '[1, "string"] 是 Array');
+		equal(isArray({'0': 0, '1': 1}), false, "{'0': 0, '1': 1} 不是 Array");
+		equal(isArray(new Array()), true, 'new Array() 是 Array');
+	});
+});
+
+test('isRegExp', 2, function () {
+	define(function (require) {
+		var isRegExp = require('util').isRegExp;
+
+		equal(isRegExp(/./), true, '/./ 是正则表达式');
+		equal(isRegExp(new RegExp('.', 'g')), true, "new RegExp('.', 'g') 是正则表达式");
+	});
+});
+
+test('isDate', 1, function () {
+	define(function (require) {
+		var isDate = require('util').isDate;
+
+		equal(isDate(new Date()), true, 'new Date() 是日期对象');
+	});
+});
+
+test('isNumber', 7, function () {
+	define(function (require) {
+		var isNumber = require('util').isNumber;
+
+		equal(isNumber(1), true, '1 是 Number');
+		equal(isNumber(1.2), true, '1.2 是 Number');
+		equal(isNumber(.43), true, '.43 是 Number');
+		equal(isNumber(NaN), true, 'NaN 是 Number');
+		equal(isNumber(0), true, '0 是 Number');
+		equal(isNumber(false), false, 'false 不是 Number');
+		equal(isNumber("2"), false, '"2" 不是 Number');
+	});
+});
+
+test('isString', 4, function () {
+	define(function (require) {
+		var isString = require('util').isString;
+
+		equal(isString("string"), true, '"string" 是 String');
+		equal(isString(22), false, '22 不是 String');
+		equal(isString(true), false, 'true 不是 String');
+		equal(isString(({}).toString()), true, '({}).toString() 是 String');
+	});
+});
+
+test('isBoolean', 5, function () {
+	define(function (require) {
+		var isBoolean = require('util').isBoolean;
+
+		equal(isBoolean(true), true, 'true 是 Boolean');
+		equal(isBoolean(false), true, 'false 是 Boolean');
+		equal(isBoolean(undefined), false, 'undefined 不是 Boolean');
+		equal(isBoolean(null), false, 'null 不是 Boolean');
+		equal(isBoolean(0), false, '0 不是 Boolean');
+	});
+});
+
+test('isFunction', 5, function () {
+	define(function (require) {
+		var isFunction = require('util').isFunction;
+
+		equal(isFunction(function(){}), true, 'function(){} 是 Function');
+		equal(isFunction(new Function()), true, 'new Function() 是 Function');
+		equal(isFunction({}), false, '{} 不是 Function');
+		equal(isFunction(/./), false, '/./ 不是 Function');
+		equal(isFunction(Date), true, 'Date 是 Function');
+	});
+});
+
+test('isElement', function () {
+	define(function (require) {
+		var isElement = require('util').isElement;
+		var ready = require('event').ready;
+		stop();
+
+		ready(function () {
+			start();
+			equal(isElement(document.getElementById('#qunit')), true, 'document.getElementById 获取到的是 DOM 元素');
+			equal(isElement(document.getElementsByTagName('body'))[0], true, 'document.getElementsByTagName 的一个元素为 DOM 元素');
+		});
+	});
+});
