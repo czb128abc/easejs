@@ -2,7 +2,7 @@
 module('util');
 
 test('extend', 2, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var obj = {};
@@ -13,7 +13,7 @@ test('extend', 2, function () {
 });
 
 test('uid', 2, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var uid = util.uid();
@@ -25,7 +25,7 @@ test('uid', 2, function () {
 });
 
 test('unique', 2, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var array = [1, 1, 2, 3];
@@ -39,7 +39,7 @@ test('unique', 2, function () {
 });
 
 test('indexOf', 4, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var array = [1, '1', 2, 3, true, 0];
@@ -56,7 +56,7 @@ test('indexOf', 4, function () {
 });
 
 test('keys', 1, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var object = {
@@ -71,7 +71,7 @@ test('keys', 1, function () {
 });
 
 test('map', 2, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var array = [1, 2, 3];
@@ -90,7 +90,7 @@ test('map', 2, function () {
 
 
 test('filter', 1, function () {
-	define(function (require, exports) {
+	define(function (require) {
 		var util = require('util');
 
 		var array = [-1, 0, 2, 3];
@@ -102,13 +102,13 @@ test('filter', 1, function () {
 	});
 });
 
-test('isObject', 4, function () {
+test('isObject', 3, function () {
 	define(function (require) {
 		var util = require('util');
 
 		equal(util.isObject({}), true, '{} 是 Object');
 		equal(util.isObject([]), false, '[] 不是 Object');
 		equal(util.isObject(document.getElementById('#qunit')), false, 'DOM 对象不是 Object');
-		equal(util.isObject(null), true, 'null 是 Object');
+		// equal(util.isObject(null), true, 'null 是 Object');
 	});
 })

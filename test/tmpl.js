@@ -2,7 +2,7 @@
 module('tmpl');
 
 test('tmpl', 3, function () {
-	define(uid(), function (require, exports) {
+	define(function (require, exports) {
 		var tmpl = require('tmpl');
 
 		var template = 'hello {tmpl}!';

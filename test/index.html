@@ -5,10 +5,17 @@
 <title>ease.js 单元测试用例</title>
 <link rel="stylesheet" href="../deps/qunit.css" rel="all">
 <script src="../deps/qunit.js"></script>
-<script src="../module.js"></script>
+<script src="../src/module.js"></script>
 <script type="text/javascript">
-ease.use(['../ajax', '../animate', '../dom', '../event', '../tmpl', '../util'], function () {});
-ease.use(['index']);
+ease.use([
+	'../src/modules/ajax',
+	'../src/modules/animate',
+	'../src/modules/dom',
+	'../src/modules/event',
+	'../src/modules/tmpl',
+	'../src/modules/util',
+	'index'
+]);
 </script>
 </head>
 <body>

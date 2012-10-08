@@ -125,7 +125,7 @@ test('复杂依赖', 7, function () {
 });
 
 test('异步加载模块（或js文件）', 3, function () {
-	define(uid(), function (require) {
+	define(function (require) {
 		ok(true, '模块初始化完毕');
 		stop();
 
