@@ -19,24 +19,6 @@ define('util', function (require, exports, module) {
         return obj;
     }
 
-    // filter
-    function filter (array, callback) {
-        if (Array.prototype.filter) {
-            return array.filter(callback);
-        }
-
-        var ret = [];
-        var result;
-
-        forEach(array, function (item, index, array) {
-            if (result = callback(item, index, array)) {
-                ret.push(item);
-            }
-        });
-
-        return ret;
-    };
-
     // map
     function map (array, callback) {
         if (Array.prototype.map) {
@@ -67,18 +49,7 @@ define('util', function (require, exports, module) {
         return ret;
     };
 
-    // 去重数组
-    function unique (array) {
-        var ret = [];
 
-        forEach(array, function (item, index) {
-            if (indexOf(ret, item) === -1) {
-                ret.push(item);
-            }
-        });
-
-        return ret;
-    };
 
     // DOM 元素判断
     function isElement (element) {
@@ -88,9 +59,7 @@ define('util', function (require, exports, module) {
     return extend({}, ease, {
             'extend': extend,
             'map': map,
-            'filter': filter,
             'keys': keys,
-            'unique': unique,
             'isElement': isElement
         });
 });

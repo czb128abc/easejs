@@ -50,7 +50,7 @@ define({
     // 记录模块通知
     var EVENTS = {};
 
-    // 调试开关
+    // 调试开关 TODO
     var DEBUG = 1;
 
     // Module Class
@@ -59,7 +59,9 @@ define({
         this.id = id;
 
         // 父模块，依赖模块
-        this.deps = Module.parseDependencies(callback);
+        this.deps = filter(unique(Module.parseDependencies(callback)), function (depId) {
+            return depId !== id;
+        });
 
         // 输出的成员
         this.exports = {};
@@ -160,7 +162,7 @@ define({
     function define (id, callback) {
         // 无效参数
         if (!id || arguments.length > 2) {
-            return false;
+            throw new Error('bad arguments!');
         }
 
         // 只有模块回调
@@ -184,6 +186,11 @@ define({
             callback = function () {
                 return _callback;
             };
+        }
+
+        // 重复定义
+        if (MODULES[id]) {
+            throw new Error('Module ' + id + ' already defined!');
         }
 
         // 产生模块
@@ -317,6 +324,41 @@ define({
     }
 
     ease.indexOf = indexOf;
+
+    // 去重数组
+    function unique (array) {
+        var ret = [];
+
+        forEach(array, function (item, index) {
+            if (indexOf(ret, item) === -1) {
+                ret.push(item);
+            }
+        });
+
+        return ret;
+    }
+
+    ease.unique = unique;
+
+    // filter
+    function filter (array, callback) {
+        if (Array.prototype.filter) {
+            return array.filter(callback);
+        }
+
+        var ret = [];
+        var result;
+
+        forEach(array, function (item, index, array) {
+            if (result = callback(item, index, array)) {
+                ret.push(item);
+            }
+        });
+
+        return ret;
+    }
+
+    ease.filter = filter;
 
     // 清除注释
     function removeComment (code) {

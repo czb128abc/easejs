@@ -190,16 +190,13 @@ test('isFunction', 5, function () {
 	});
 });
 
-test('isElement', function () {
+test('isElement', 4, function () {
 	define(function (require) {
 		var isElement = require('util').isElement;
-		var ready = require('event').ready;
-		stop();
 
-		ready(function () {
-			start();
-			equal(isElement(document.getElementById('#qunit')), true, 'document.getElementById 获取到的是 DOM 元素');
-			equal(isElement(document.getElementsByTagName('body'))[0], true, 'document.getElementsByTagName 的一个元素为 DOM 元素');
-		});
+		equal(isElement(document.getElementById('qunit')), true, 'document.getElementById 获取到的是 DOM 元素');
+		equal(isElement(document.getElementsByTagName('body')[0]), true, 'document.getElementsByTagName 的一个元素为 DOM 元素');
+		equal(isElement(document.getElementsByName('__test')[0]), true, 'document.getElementsByName 的一个元素为 DOM 元素');
+		equal(isElement(document.links[0]), true, 'document.links 的一个元素为 DOM 元素');
 	});
 });

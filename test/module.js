@@ -64,8 +64,9 @@ test('定义依赖模块，先定义的后执行', 3, function () {
 });
 
 test('特殊模块：无参数定义', 1, function () {
-	var result = define();
-	strictEqual(result, false, '未传入参数的模块定义，直接返回 false，什么都不做');
+	throws(function () {
+		define();
+	}, Error, 'bad arguments!');
 });
 
 test('特殊模块：仅一个参数，为 function', 1, function () {
@@ -121,6 +122,52 @@ test('复杂依赖', 7, function () {
 		var g = require('_g');
 
 		ok(true, '模块 _d 初始化完毕，依赖模块 _e, _f, _g');
+	});
+});
+
+test('依赖自身', 3, function () {
+	define('self_deps', function (require, exports, module) {
+		exports.method = function () {
+			return 'method';
+		};
+
+		var self = require('self_deps');
+		var another = require('self_another');
+
+		ok(true, '依赖自己可以运行');
+		equal(self.method(), 'method', '可以读取自身的公开成员');
+	});
+
+	define('self_another', function (require, exports) {
+		ok(true, 'self_another 初始化完毕');
+	});
+});
+
+test('重复定义模块', function () {
+	var mid = uid();
+
+	define(mid, function () {
+		ok(true, mid + ' 初始化完毕');
+	});
+
+	throws(function () {
+		define(mid, function () {});
+	}, Error, 'Module ' + mid + ' already defined!');
+});
+
+test('相互依赖', 1, function () {
+	ok(true, '相互依赖的模块不会编译');
+
+	define('circleA', function (require, exports, module) {
+		exports.a = 'a';
+		var b = require('circleB');
+		ok(false, 'circleA 初始化完毕，依赖模块 circleB');
+	});
+
+	define('circleB', function (require, exports, module) {
+		exports.b = 'b';
+		var a = require('circleA');
+		ok(false, 'circleB 初始化完毕，依赖模块 circleA');
 	});
 });
 
