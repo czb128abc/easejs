@@ -85,6 +85,21 @@ test('特殊模块：仅一个参数，为 object', 2, function () {
 	});
 });
 
+test('#13 依赖的模块没有完全就绪，则不执行', 0, function () {
+	define('add', function (require, exports, module) {
+		module.exports = function (a, b) {
+			return a + b;
+		};
+	});
+
+	define(function (require) {
+		var add = require('add');
+		var minus = require('minus');
+
+		equal(add(1, 2), 3);
+	});
+});
+
 test('复杂依赖', 7, function () {
 	define('_a', function (require, exports) {
 		var d = require('_d');

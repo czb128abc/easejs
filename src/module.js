@@ -25,7 +25,13 @@ define({
     // 类型判断
     forEach('Boolean Number String Function Array Date RegExp Object'.split(' '), function (type) {
         ease['is' + type] = function (value) {
-            return '[object ' + type + ']' === toString.call(value);
+            var result = '[object ' + type + ']' === toString.call(value);
+
+            if (type === 'Object') {
+                result = result && value === Object(value);
+            }
+
+            return result;
         };
     });
 
@@ -89,7 +95,7 @@ define({
 
         forEach(deps, function (depId, index) {
             if (!Module.completed(depId)) {
-                return (completed = false); // 提升性能
+                return (complete = false); // 提升性能
             }
         });
 
@@ -283,13 +289,11 @@ define({
     // -------------------------------------------------------------------- functions
 
     // 生成唯一 ID
-    function uid () {
+    function uid (prefix) {
         uid.num = uid.num || 0;
-        return _getUid.call(this, ++uid.num);
-    }
+        prefix = prefix || 'EASE_NATIVE_';
 
-    function _getUid (id) {
-        return 'EASE_NATIVE_' + id;
+        return prefix + ++uid.num;
     }
 
     ease.uid = uid;

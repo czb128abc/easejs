@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>外部引入模块</title>
+<link rel="stylesheet" type="text/css" href="style/ease.css">
+<script src="../src/module.js"></script>
+</head>
+<body>
+<h1>easejs 基本使用场景<a href="index.html">返回</a></h1>
+<div id="ease"></div>
+<script type="text/javascript">
+// 一个文件为一个包，一个页面为一个应用程序
+// 应用程序初始化时，提前引入需要的包，包中的模块会自动初始化供后续模块调用
+// 模块可以写在HTML文件里，也可以独立到包中（外链js文件）
+// 模块间的依赖关系与书写顺序无关
+// 如果一个模块仅仅用于执行，则不需要定义模块ID；如果有其他模块依赖该模块，则需要定义模块ID，并且ID不能重复定义（系统会抛出错误）
+// require 的参数只能为字符串（错误：require(variable);），并且不能赋值后使用（错误：var a = require; a('moduleId');）
+
+// 引入应用程序需要的包文件
+ease.use('mods/add');
+
+// 定义应用程序模块
+define(function (require) {
+    var add = require('add');
+    var getId = require('dom').getId;
+
+    getId('ease').innerHTML = '12 + 13 = ' + (add(12, 13));
+});
+
+// 定义一个功能模块，根据传入的 id字符串 返回 Dom
+define('dom', function (require, exports) {
+    exports.getId = function (id) {
+        return document.getElementById(id);
+    };
+});
+</script>
+</body>
+</html>
