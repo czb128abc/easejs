@@ -102,14 +102,14 @@ test('filter', 1, function () {
 	});
 });
 
-test('isObject', 3, function () {
+test('isObject', 4, function () {
 	define(function (require) {
 		var util = require('util');
 
 		equal(util.isObject({}), true, '{} 是 Object');
 		equal(util.isObject([]), false, '[] 不是 Object');
 		equal(util.isObject(document.getElementById('#qunit')), false, 'DOM 对象不是 Object');
-		// equal(util.isObject(null), true, 'null 是 Object');
+		equal(util.isObject(null), false, 'null 不是 Object');
 	});
 });
 
