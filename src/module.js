@@ -56,8 +56,8 @@ define({
     // 记录模块通知
     var EVENTS = {};
 
-    // 调试开关 TODO
-    var DEBUG = 1;
+    // 记录加载的包文件
+    var USED = {};
 
     // Module Class
     function Module (id, callback) {
@@ -265,6 +265,12 @@ define({
         }
 
         require.async = function (url, callback) {
+            if (USED[url]) {
+                throw new Error('load package ' + url + ' multiple');
+            }
+
+            USED[url] = true;
+
             var script = document.createElement('script'),
                 s = document.getElementsByTagName('script')[0];
 
@@ -376,7 +382,10 @@ define({
         'load': loadFiles,
         'use': loadFiles,
         'uid': uid,
-        'forEach': forEach
+        'forEach': forEach,
+        'filter': filter,
+        'unique': unique,
+        'indexOf': indexOf
     };
 
 })(this);

@@ -186,15 +186,22 @@ test('相互依赖', 1, function () {
     });
 });
 
-test('异步加载模块（或js文件）', 3, function () {
+test('异步加载模块（或js文件）', function () {
     define(function (require) {
         ok(true, '模块初始化完毕');
         stop();
 
-        require.async('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function () {
-            start();
-            ok(true, '异步加载的 jquery.js 完毕');
-            equal($('#qunit').size(), 1, '页面中 $("div#qunit").size() == 1');
-        });
+        function usePackage () {
+            require.async('http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js', function () {
+                start();
+                ok(true, '异步加载的 jquery.js 完毕');
+                equal($('#qunit').size(), 1, '页面中 $("div#qunit").size() == 1');
+            });
+        }
+
+        usePackage();
+        throws(function () {
+            usePackage()
+        }, Error, '重复加载包文件，抛出异常');
     });
 });

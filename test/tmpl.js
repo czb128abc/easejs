@@ -72,9 +72,22 @@ test('tmpl', function () {
             }
         };
         result = tmpl.render('{fn}', view);
-        equal(result, 'a', '能正确渲染函数变量值');
+        equal(result, 'a', '能正确渲染函数变量值 {fn}');
 
         result = tmpl.render('{#fn}{fn}{/fn}', view);
-        equal(result, 'a', '能正确渲染函数变量值，区间判断');
+        equal(result, 'a', '能正确渲染函数变量值，区间判断 {#fn}{fn}{/fn}');
+
+        result = tmpl.render('{a.b}', {
+            'a': {
+                'b': 'ab'
+            }
+        });
+        equal(result, 'ab', '能正确读取以点分割的属性值 {a.b}');
+
+        result = tmpl.render('{a}', {a: '<b>s</b>'});
+        equal(result, '&lt;b&gt;s&lt;&#x2F;b&gt;', '默认 {a} 能正确编码HTML标签');
+
+        result = tmpl.render('{&a}', {a: '<b>s</b>'});
+        equal(result, '<b>s</b>', '{&a} 能不编码正常输出');
     });
 });

@@ -5,6 +5,14 @@ define('tmpl', function (require, exports, module) {
     // $1: name; $2: content; $4: none value content;
     var RE_SECTION = /\{#([^\}]+?)\}(.*?)(\{else\}(.+?))?\{\/\1\}/mg;
     var RE_TAG = /\{(!|&|\.)?([^\}]+?)?\}/g;
+    var ENTITY = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': '&quot;',
+            "'": '&#39;',
+            "/": '&#x2F;'
+        };
 
 
     // render
@@ -46,7 +54,14 @@ define('tmpl', function (require, exports, module) {
         view = view || {};
 
         return template.replace(RE_TAG, function (match, operator, name) {
-            var value = view[name] || '';
+            var values = String(name).split('.');
+            var value = view;
+
+            while (values.length) {
+                value = value[values.shift()] || {};
+            }
+
+            value = value || '';
 
             if (util.isFunction(value)) {
                 value = value.apply(view);
@@ -60,9 +75,10 @@ define('tmpl', function (require, exports, module) {
                     return '';
 
                 case '&':
+                    return value;
 
                 default:
-                    return value;
+                    return entity (value);
             }
         });
     }
@@ -82,6 +98,13 @@ define('tmpl', function (require, exports, module) {
         }
 
         return value;
+    }
+
+    // entity
+    function entity(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return ENTITY[s];
+        });
     }
 
     exports.render = render;
