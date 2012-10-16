@@ -21,6 +21,15 @@ test('tmpl', function () {
         result = tmpl.render('{#test}1{else}2{/test}', {test: false});
         equal(result, "2", '能进入 else 分支');
 
+        result = tmpl.render('{^a}^a{/a}', {a: 0});
+        equal(result, '^a', '^ 操作符能正确渲染');
+
+        result = tmpl.render('{^test}1{else}2{/test}', {test: 1});
+        equal(result, "2", '^ 能进入 else 分支');
+
+        result = tmpl.render('{^test}1{else}2{/test}', {test: false});
+        equal(result, "1", '^ 能进入 第一分支');
+
         result = tmpl.render('hello{#test} world{/test}', {'test': true});
         equal(result, 'hello world', '存在的模版变量，渲染模版 section 为其内部的值');
 
@@ -89,5 +98,17 @@ test('tmpl', function () {
 
         result = tmpl.render('{&a}', {a: '<b>s</b>'});
         equal(result, '<b>s</b>', '{&a} 能不编码正常输出');
+
+        result = tmpl.render('{.aaa}', {'.aaa': 'aaa'});
+        equal(result, 'aaa', '以点号开头的变量值可以被正确渲染');
+
+        /*view = {
+            'a': {
+                'b': 'a.b'
+            },
+            'c': 'c'
+        };
+        result = tmpl.render('{#a.b}{a.b}{c}{/a.b}', view);
+        equal(result, 'a.bc', '能正确渲染 {#a.b} 类似的区间');*/
     });
 });

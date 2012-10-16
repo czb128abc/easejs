@@ -2,8 +2,8 @@
 define('tmpl', function (require, exports, module) {
     var util = require('util');
 
-    // $1: name; $2: content; $4: none value content;
-    var RE_SECTION = /\{#([^\}]+?)\}(.*?)(\{else\}(.+?))?\{\/\1\}/mg;
+    // $1: operator; $2 name; $4: content; $5: none value content;
+    var RE_SECTION = /\{([#|\^])([^\}]+?)\}(.*?)(\{else\}(.+?))?\{\/\2\}/mg;
     var RE_TAG = /\{(!|&|\.)?([^\}]+?)?\}/g;
     var ENTITY = {
             "&": "&amp;",
@@ -14,7 +14,6 @@ define('tmpl', function (require, exports, module) {
             "/": '&#x2F;'
         };
 
-
     // render
     function render (template, view) {
         template = template.replace(/[\r\n\t\u2029\u2028]/, '');
@@ -23,13 +22,19 @@ define('tmpl', function (require, exports, module) {
         return tag(html, view);
     }
 
-    // 渲染 section
+    // 渲染 section 一并渲染 section 中的 tag
+    // {#a} something {else} something else {/a}
+    // {^a} something {else} something else {/a}
     function section (template, view) {
-        return template.replace(RE_SECTION, function (match, name, content, xxx, vcontent, offset, template) {
+        return template.replace(RE_SECTION, function (match, operator, name, content, xxx, vcontent, offset, template) {
             var value = find(name, view);
             var hasSection = RE_SECTION.test(content);
             var funcmap = {'render': render, 'tag': tag};
             var fn = funcmap[hasSection ? 'render' : 'tag'];
+
+            if (operator === '^') {
+                content = [vcontent, vcontent = content][0];
+            }
 
             if (util.isArray(value)) {
                 return util.map(value, function (item) {
@@ -37,15 +42,11 @@ define('tmpl', function (require, exports, module) {
                 }).join('');
             }
 
-            else if (util.isFunction(value)) {
-                return value.apply(view);
-            }
-
             else if (value) {
                 return fn(content, util.extend({}, view, value));
             }
 
-            return vcontent && tag(vcontent, view) || '';
+            return vcontent && fn(vcontent, view) || '';
         });
     }
 
@@ -69,7 +70,7 @@ define('tmpl', function (require, exports, module) {
 
             switch (operator) {
                 case '.':
-                    return view[operator];
+                    return view[operator] || view[operator + name];
 
                 case '!':
                     return '';
