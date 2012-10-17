@@ -37,7 +37,7 @@ define({
 
     // ------------------------------------------------------------- Module System
     // require 分析
-    var RE_REQUIRE = /(?:^|[^.$])\brequire\s*\(\s*(["'])([^"'\s\)]+)\1\s*\)/g;
+    var RE_REQUIRE_NAME = /^function\s*\(\s*([\w_\$]+)/;
 
     // 多行与单行注释
     var RE_BLOCK_COMMENT = /^\s*\/\*[\s\S]*?\*\/\s*$/mg;
@@ -129,13 +129,20 @@ define({
     Module.parseDependencies = function (callback) {
         var callback = removeComment(callback.toString()),
             match,
-            ret = [];
+            deps = [];
 
-        while (match = RE_REQUIRE.exec(callback)) {
-            match[2] && ret.push(match[2]);
+        var fnName, RE_FN;
+        if (RE_REQUIRE_NAME.test(callback)) {
+            fnName = RegExp.$1;
+
+            RE_FN = new RegExp('(?:^|[^.$])\\b'+ fnName +'\\s*\\(\\s*(["\'])([^"\'\\s\\)]+)\\1\\s*\\)', 'g');
+
+            while (match = RE_FN.exec(callback)) {
+                match[2] && deps.push(match[2]);
+            }
         }
 
-        return ret;
+        return deps;
     };
 
     // 注册模块使之处于等待编译状态
