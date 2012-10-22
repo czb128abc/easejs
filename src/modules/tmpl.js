@@ -108,5 +108,13 @@ define('tmpl', function (require, exports, module) {
         });
     }
 
+    // simple template render
+    function simple (template, view) {
+        return String(template).replace(/\{([^\}]+?)\}/g, function (match, key) {
+            return view[key] || '';
+        });
+    }
+
     exports.render = render;
+    exports.simple = simple;
 });

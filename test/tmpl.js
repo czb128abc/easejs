@@ -110,5 +110,8 @@ test('tmpl', function () {
         };
         result = tmpl.render('{#a.b}{a.b}{c}{/a.b}', view);
         equal(result, 'a.bc', '能正确渲染 {#a.b} 类似的区间');*/
+
+        result = tmpl.simple('{hello} world!', {'hello': 'hello'});
+        equal(result, 'hello world!', '可以正确执行简单模版渲染');
     });
 });
