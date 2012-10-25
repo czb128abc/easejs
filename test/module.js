@@ -205,3 +205,25 @@ test('异步加载模块（或js文件）', function () {
         }, Error, '重复加载包文件，抛出异常');
     });
 });
+
+/*test('ease.use ease.config.maps', function () {
+    stop();
+    ease.config.maps = [{'jquery': ['93b5e228dd8006f4', 's0']}, 'http://{1}.qhimg.com/static/{0}.js'];
+    ease.use('jquery', function () {
+        start();
+        ok(true, 'http://s0.qhimg.com/static/93b5e228dd8006f4.js');
+    });
+});*/
+
+test('ease.use ease.config.maps 2', function () {
+    stop();
+    ease.config.maps = [{
+            'jquery': ['93b5e228dd8006f4', 's0'],
+            'md5': ['473990a912af1310', 's2']
+        }, 'http://{1}.qhimg.com/static/{0}.js'];
+
+    ease.use(['jquery, md5'], function () {
+        start();
+        ok(true, 'http://s0.qhimg.com/static/93b5e228dd8006f4.js');
+    });
+});

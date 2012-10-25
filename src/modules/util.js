@@ -19,20 +19,6 @@ define('util', function (require, exports, module) {
         return obj;
     }
 
-    // map
-    function map (array, callback) {
-        if (Array.prototype.map) {
-            return array.map(callback);
-        }
-
-        var ret = [];
-        forEach(array, function (item, index, array) {
-            ret.push(callback(item, index, array));
-        });
-
-        return ret;
-    };
-
     // keys
     function keys (object) {
         if (Object.keys) {
@@ -58,7 +44,6 @@ define('util', function (require, exports, module) {
 
     return extend({}, ease, {
             'extend': extend,
-            'map': map,
             'keys': keys,
             'isElement': isElement
         });

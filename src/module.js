@@ -19,7 +19,7 @@ define({
 
 */
 (function (global) {
-    var ease = {};
+    var ease = {config: {}};
     var toString = Object.prototype.toString;
 
     // 类型判断
@@ -244,25 +244,48 @@ define({
     function loadFiles (files, callback) {
         var require = createRequire();
         var complete = 0;
+        var maps = ease.config.maps || [];
+        var _map = maps[0];
+        var template = maps[1];
 
         if (!ease.isArray(files)) {
             files = [files];
         }
 
         forEach(files, function (file) {
+            // 多文件合并形式
+            if (file.indexOf(',') > 0) {
+                var s = 's0';
+                file = map(file.split(/,\s*/), function (item, index) {
+                    var result = _map && _map[trim(item)];
+
+                    // 取服务器
+                    if (index === 0) {
+                        s = result[1];
+                    }
+
+                    return result[0] || item;
+
+                }).join(',');
+
+                _map[file] = [file, s];
+            }
+
+            if (_map && _map[file]) {
+                file = tmpl(template, _map[file]);
+            }
+
             if (!/\.js$/i.test(file)) {
                 file += '.js';
             }
 
             require.async(file, function () {
-                complete++;
-
-                if (complete === files.length) {
+                if (++complete === files.length) {
                     callback && callback();
                 }
             });
         });
-    };
+    }
 
     // 创建 require
     function createRequire () {
@@ -300,6 +323,11 @@ define({
 
 
     // -------------------------------------------------------------------- functions
+
+    // trim
+    function trim (string) {
+        return String(string).replace(/^\s+|\s+$/, '');
+    }
 
     // 生成唯一 ID
     function uid (prefix) {
@@ -377,9 +405,32 @@ define({
 
     ease.filter = filter;
 
+    // map
+    function map (array, callback) {
+        if (Array.prototype.map) {
+            return array.map(callback);
+        }
+
+        var ret = [];
+        forEach(array, function (item, index, array) {
+            ret.push(callback(item, index, array));
+        });
+
+        return ret;
+    }
+
+    ease.map = map;
+
     // 清除注释
     function removeComment (code) {
         return code.replace(RE_BLOCK_COMMENT, '').replace(RE_LINE_COMMENT, '');
+    }
+
+    // 简易模版替换
+    function tmpl (template, view) {
+        return String(template).replace(/\{([^\}]+?)\}/g, function (match, key) {
+            return view[key] || match;
+        });
     }
     // -------------------------------------------------------------------------------- functions END
 
@@ -392,7 +443,10 @@ define({
         'forEach': forEach,
         'filter': filter,
         'unique': unique,
-        'indexOf': indexOf
+        'indexOf': indexOf,
+        'modules': MODULES,
+        'tmpl': tmpl,
+        'config': ease.config
     };
 
 })(this);
